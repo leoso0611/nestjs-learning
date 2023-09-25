@@ -10,43 +10,37 @@ import {
 } from '@nestjs/common';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
+import { CatsService } from './cats.service';
 
 @Controller('cats')
 export class CatsController {
-  // GET /cats --> []
+  constructor(private readonly catsService: CatsService) {}
+  // GET /cats?weapon --> []
   @Get()
-  getCats(@Query('type') type: string) {
-    return [{ type }];
+  getCats(@Query('weapon') weapon: 'bite' | 'scratch') {
+    // const service = new CatsService();
+    return this.catsService.getCats(weapon);
   }
 
   // GET /cats/:id --> { ... }
   @Get(':id')
   getOneCat(@Param('id') id: string) {
-    return {
-      id,
-    };
+    return this.catsService.getCat(+id);
   }
   // POST /cats
   @Post()
   createCat(@Body() createCatDto: CreateCatDto) {
-    return {
-      name: createCatDto.name,
-    };
+    return this.catsService.createCat(createCatDto);
   }
 
   // PUT /cats/:id --> { ... }
   @Put(':id')
   updateCat(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto) {
-    return {
-      id,
-      name: updateCatDto.name,
-    };
+    return this.catsService.updateCat(+id, updateCatDto);
   }
   // DELETE /cats/:id
   @Delete(':id')
   removeCat(@Param('id') id: string) {
-    return {
-      id,
-    };
+    return this.catsService.removeCat(+id);
   }
 }
